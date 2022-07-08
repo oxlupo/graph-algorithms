@@ -1,6 +1,12 @@
 import urllib.request
 import re
 import spacy
+from neo4j import GraphDatabase, basic_auth
+
+driver = GraphDatabase.driver(
+  "bolt://<HOST>:<BOLTPORT>",
+  auth=basic_auth("neo4j", "yousef"))
+
 
 target_url = 'https://www.gutenberg.org/files/95/95-0.txt'
 
