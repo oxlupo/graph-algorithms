@@ -27,3 +27,10 @@ for i, x in enumerate(involved):
     decode['$${}$$'.format(i)] = x
     # Preprocess text
     c = c.replace(x, ' $${}$$ '.format(i))
+
+save_query = """
+    MERGE (p1:Person{name:$name1})
+    MERGE (p2:Person{name:$name2})
+    MERGE (p1)-[r:RELATED]-(p2)
+    ON CREATE SET r.score = 1
+    ON MATCH SET r.score = r.score + 1"""
