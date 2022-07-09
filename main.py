@@ -4,7 +4,7 @@ import spacy
 from neo4j import GraphDatabase, basic_auth
 
 driver = GraphDatabase.driver(
-  "bolt://<HOST>:<BOLTPORT>",
+  "bolt://localhost:7687",
   auth=basic_auth("neo4j", "yousef"))
 
 
@@ -40,3 +40,25 @@ save_query = """
     MERGE (p1)-[r:RELATED]-(p2)
     ON CREATE SET r.score = 1
     ON MATCH SET r.score = r.score + 1"""
+
+# Get an array of words
+ws = c.split()
+l = len(ws)
+# Iterate through words
+for wi,w in enumerate(ws):
+    # Skip if the word is not a person
+    if not w[:2] == '$$':
+        continue
+    # Check next x words for any involved person
+    x = 14
+    for i in range(wi+1,wi+x):
+        # Avoid list index error
+        if i >= l:
+            break
+        # Skip if the word is not a person
+        if not ws[i][:2] == '$$':
+            continue
+        # Store to Neo4j
+        params = {'name1':decode[ws[wi]],'name2':decode[ws[i]]}
+        session.run(save_query, params)
+        print(decode[ws[wi]],decode[ws[i]])
