@@ -74,3 +74,19 @@ CALL algo.louvain('Person','RELATED',{direction:'BOTH'})
 with driver.session() as session:
     session.run(pagerank)
     session.run(louvain)
+
+cypher = "MATCH (p1:Person)-[r:RELATED]->(p2:Person) RETURN *"
+labels_json = {
+    "Person": {
+        "caption": "name",
+        "size": "pagerank",
+        "community": "community"
+    }
+}
+relationships_json = {
+    "RELATED": {
+        "thickness": "score",
+        "caption": False
+    }
+}
+driver.generate_vis("bolt://localhost:7687", "neo4j", "yousef", cypher, labels_json, relationships_json)
