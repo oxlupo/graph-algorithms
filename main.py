@@ -45,13 +45,13 @@ save_query = """
 ws = c.split()
 l = len(ws)
 # Iterate through words
-for wi,w in enumerate(ws):
+for wi, w in enumerate(ws):
     # Skip if the word is not a person
     if not w[:2] == '$$':
         continue
     # Check next x words for any involved person
     x = 14
-    for i in range(wi+1,wi+x):
+    for i in range(wi+1, wi+x):
         # Avoid list index error
         if i >= l:
             break
@@ -59,6 +59,18 @@ for wi,w in enumerate(ws):
         if not ws[i][:2] == '$$':
             continue
         # Store to Neo4j
-        params = {'name1':decode[ws[wi]],'name2':decode[ws[i]]}
-        session.run(save_query, params)
-        print(decode[ws[wi]],decode[ws[i]])
+        params = {'name1': decode[ws[wi]], 'name2': decode[ws[i]]}
+        driver.session.run(save_query, params)
+        print(decode[ws[wi]], decode[ws[i]])
+
+
+pagerank ="""
+CALL algo.pageRank('Person','RELATED',{direction:'BOTH'})
+"""
+
+louvain = """
+CALL algo.louvain('Person','RELATED',{direction:'BOTH'})
+"""
+with driver.session() as session:
+    session.run(pagerank)
+    session.run(louvain)
